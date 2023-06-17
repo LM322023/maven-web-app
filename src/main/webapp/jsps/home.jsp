@@ -9,10 +9,10 @@
 </head>
 </head>
 <body>
-<h1 align="center">Welcome to Tesla Web application Sawgrass Project.</h1>
+<h1 align="center">Welcome to Tesla Web application White Plains Project.</h1>
 <h1 align="center">We are developing and supporting quality Software Solutions to millions of clients globally.
 	           We are raising millionaires in IT automation.
-	Tah Michael ond sons offers Training for DevOps with Linux and Cloud equipping IT Engineers for best performance.
+	Tah Michael and sons offers Training for DevOps with Linux and Cloud equipping IT Engineers for best performance.
 	Class32 will end in August 30th, 2023. </h1>
 <hr>
 <br>
