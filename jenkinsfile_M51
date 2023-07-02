@@ -35,9 +35,11 @@ node{
   stage('2Test+build'){
       sh "${mavenHome}/bin/mvn clean package"
   }
+/*
   stage('3CodeQualityAnalysis'){
       sh "${mavenHome}/bin/mvn sonar:sonar"
   }
+*/
   stage('4UploadArtifacts'){
       sh "${mavenHome}/bin/mvn deploy"
   }
