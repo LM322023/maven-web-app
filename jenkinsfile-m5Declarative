@@ -1,0 +1,61 @@
+pipeline{
+    agent any
+    tools {
+        maven "maven3.9.2"
+    }
+    //options {}
+    //triggers {}
+    stages {
+        stage('1.CloneCode'){
+            steps{
+                sh "echo ready to automate build"
+                git branch: 'main', url: 'https://github.com/LM322023/maven-web-app'
+                sh "echo latest version collected"
+            }
+        }
+        stage('2.Build'){
+            steps{
+                sh "echo build process start"
+                sh "mvn clean package"
+                sh "echo build process end"
+            }
+        }
+        stage('3.codeQualityAnalysis'){
+            steps{
+                sh "echo CodeQuality review start"
+                sh "mvn sonar:sonar"
+                sh "echo CodeQuality review ends"
+            }
+        }
+        stage('4.upload'){
+            steps{
+                sh "echo Artifact upload to nexus start"
+                sh "mvn deploy"
+                sh "echo Build and release completed"
+            }
+        }
+        stage('5.deploy2UAT'){
+            steps{
+                deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://18.237.87.235:8177/')], contextPath: null, war: 'target/*war'
+                sh "echo Deployment to UAT successfully completed" 
+            }
+        }
+    }
+    post {
+        failure {
+            emailext body: '''Hi Team,
+Build failed
+M5 Inc''', recipientProviders: [developers(), contributor()], subject: 'build status', to: 'developers'
+        }
+        success {
+            emailext body: '''Hi Team,
+Build succeeded
+M5 Inc''', recipientProviders: [developers(), contributor()], subject: 'build status', to: 'developers'
+        }
+        always {
+            emailext body: '''Hi Team,
+Build update
+M5 Inc''', recipientProviders: [developers(), contributor()], subject: 'build status', to: 'developers'
+        }
+    }
+}
