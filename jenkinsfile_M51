@@ -40,3 +40,31 @@ node {
     }
 */
 }
+
+node{
+  def mavenHome = tool name: 'maven3.9.2'
+  stage('1.GetCode'){
+    git branch: 'dev', credentialsId: 'git', url: 'https://github.com/tahmichael25/babsmike'
+    //git branch: 'main', credentialsId: 'git', url: 'https://github.com/tahmichael25/babsmike'
+  }
+  stage('2Test+build'){
+      sh "${mavenHome}/bin/mvn clean package"
+  }
+  stage('3CodeQualityAnalysis'){
+      sh "${mavenHome}/bin/mvn sonar:sonar"
+  }
+  stage('4UploadArtifacts'){
+      sh "${mavenHome}/bin/mvn deploy"
+  }
+  stage('5Deploy2UAT'){
+      deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://18.237.87.235:8177/')], contextPath: null, war: 'target/*war'
+  }
+  stage('6Notification'){
+      emailext body: '''Hello Team,
+
+Build status is complete
+
+M5 Inc
+''', recipientProviders: [developers(), upstreamDevelopers(), contributor()], subject: 'build status', to: 'developers'
+  }
+}
